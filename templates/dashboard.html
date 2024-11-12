@@ -1,0 +1,12 @@
+{% include 'header.html'  %} 
+
+<h1>Bienvenido, {{ role }}!</h1>
+    {% if role == 'alumno' %}
+        <p>Contenido para alumnos.</p>
+    {% elif role == 'padre' %}
+        <p>Contenido para padres.</p>
+    {% elif role == 'docente' %}
+        <p>Contenido para docentes.</p>
+    {% endif %}
+
+    {% include 'footer.html'  %}
