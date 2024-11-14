@@ -1,0 +1,30 @@
+{% include 'header.html' %}
+
+<h2 class="my-4">Registrar Usuario</h2>
+
+<form action="/register" method="POST">
+    <div class="mb-3">
+        <label for="nombre_completo" class="form-label">Nombre Completo</label>
+        <input type="text" class="form-control" id="nombre_completo" name="nombre_completo" required>
+    </div>
+    <div class="mb-3">
+        <label for="correo_electronico" class="form-label">Correo Electrónico</label>
+        <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="role" class="form-label">Rol</label>
+        <select class="form-select" id="role" name="role" required>
+            <option value="docente">Docente</option>
+            <option value="alumno">Alumno</option>
+            <option value="padre">Padre</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+
+{% include 'footer.html' %}
+
