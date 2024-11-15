@@ -1,0 +1,53 @@
+{% include 'header.html' %}
+
+<h2>Crear Nueva Tarea</h2>
+<form
+  action="{{ url_for('crear_tarea') }}"
+  method="POST"
+  enctype="multipart/form-data"
+>
+  <div class="mb-3">
+    <label for="titulo" class="form-label">Título</label>
+    <input
+      type="text"
+      class="form-control"
+      id="titulo"
+      name="titulo"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="descripcion" class="form-label">Descripción</label>
+    <textarea
+      class="form-control"
+      id="descripcion"
+      name="descripcion"
+      rows="4"
+      required
+    ></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="fecha_entrega" class="form-label">Fecha de Entrega</label>
+    <input
+      type="date"
+      class="form-control"
+      id="fecha_entrega"
+      name="fecha_entrega"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="archivo_adjunto" class="form-label"
+      >Archivo Adjunto (Opcional)</label
+    >
+    <input
+      type="file"
+      class="form-control"
+      id="archivo_adjunto"
+      name="archivo_adjunto"
+    />
+  </div>
+  <button type="submit" class="btn btn-primary">Crear Tarea</button>
+</form>
+
+{% include 'footer.html' %}

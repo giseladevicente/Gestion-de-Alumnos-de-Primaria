@@ -1,0 +1,47 @@
+{% include 'header.html' %}
+
+<h2>Lista de Tareas</h2>
+
+<!-- Botones -->
+<div class="mb-3 d-flex gap-2">
+  <a href="{{ url_for('crear_tarea') }}" class="btn btn-primary"
+    >Agregar Nueva Tarea</a
+  >
+  <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"
+    >Regresar al Panel de Control</a
+  >
+</div>
+
+<!-- Tabla de tareas -->
+{% if tareas %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Fecha de Entrega</th>
+      <th>Archivo Adjunto</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tarea in tareas %}
+    <tr>
+      <td>{{ tarea[1] }}</td>
+      <td>{{ tarea[2] }}</td>
+      <td>{{ tarea[3] }}</td>
+      <td>
+        {% if tarea[4] %}
+        <a
+          href="{{ url_for('static', filename='uploads/' + tarea[4]) }}"
+          target="_blank"
+          >Ver archivo</a
+        >
+        {% else %} No hay archivo adjunto {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No has creado tareas todavía.</p>
+{% endif %} {% include 'footer.html' %}

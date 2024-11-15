@@ -1,0 +1,7 @@
+{% include 'header.html' %} {% if role == 'docente' %}
+<h2>Panel de Control para Docentes</h2>
+<ul>
+  <li><a href="{{ url_for('crear_tarea') }}">Crear tarea</a></li>
+  <li><a href="{{ url_for('lista_tareas') }}">Ver tareas</a></li>
+</ul>
+{% endif %} {% include 'footer.html' %}

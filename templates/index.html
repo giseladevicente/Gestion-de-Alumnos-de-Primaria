@@ -1,31 +1,45 @@
-{% include 'header.html' %} 
+{% include 'header.html' %}
 
 <div class="container">
-    <h2 class="my-4">Iniciar sesión</h2>
-    <form action="/login" method="POST">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="my-4">Iniciar sesión</h2>
+      <form action="/login" method="POST">
         <div class="mb-3">
-            <label for="email" class="form-label">Usuario</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+          <label for="email" class="form-label">Usuario</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            aria-label="Correo electrónico"
+            required
+          />
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+          <label for="password" class="form-label">Contraseña</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            required
+          />
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Rol</label>
-            <select class="form-select" id="role" name="role" required>
-                <option value="alumno">Alumno</option>
-                <option value="padre">Padre</option>
-                <option value="docente">Docente</option>
-            </select>
+          <label for="role" class="form-label">Rol</label>
+          <select class="form-select" id="role" name="role" required>
+            <option value="alumno">Alumno</option>
+            <option value="padre">Padre</option>
+            <option value="docente">Docente</option>
+          </select>
         </div>
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    </form>
+      </form>
 
-    <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+      <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+    </div>
+  </div>
 </div>
 
 {% include 'footer.html' %}
-
-
-
