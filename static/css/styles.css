@@ -20,7 +20,7 @@ padding: 20px;
 max-width: 500px;
 }
 
-h2 {
+.h2-header {
 font-size: 1.8rem;
 margin-bottom: 20px;
 }
@@ -46,8 +46,36 @@ color: #f8f9fa;
 margin: 0 10px;
 }
 
+/* dashboard.html */
+.card {
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #28a745;
+}
+
+
+.list-group-item a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.list-group-item a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
 
 /* Media Queries */
+
+/* Small devices (601px x 400px) */
+@media (min-width: 601px) {
+  .list-group-item {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
 
 /* Medium devices (768px x 600px) */
 @media (min-width: 768px) {
@@ -58,10 +86,20 @@ margin: 0 10px;
     footer {
       font-size: 0.9rem;
     }
-  }
   
-  /* Large devices (992px x 800px) */
-  @media (min-width: 992px) {
+    .col-md-8 {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .role {
+        justify-content: center;
+    }
+
+}
+
+/* Large devices (992px x 800px) */
+@media (min-width: 992px) {
     header h1 {
       font-size: 2.5rem;
     }
@@ -69,13 +107,27 @@ margin: 0 10px;
     footer {
       font-size: 1rem;
     }
-  }
+
+    .card-header {
+        font-size: 1.5rem; 
+    }
+
+    .container-dash {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .card-body p {
+        font-size: 1.1rem;
+    }
+
+}
   
   /* Extra large devices (1200px x 800px) */
-  @media (min-width: 1200px) {
+@media (min-width: 1200px) {
   
     main {
       padding: 30px;
     }
   
-  }
+}

@@ -1,12 +1,87 @@
-{% include 'header.html'  %} 
+{% include 'header.html' %}
 
-<h1>Bienvenido, {{ role }}!</h1>
-    {% if role == 'alumno' %}
-        <p>Contenido para alumnos.</p>
-    {% elif role == 'padre' %}
-        <p>Contenido para padres.</p>
-    {% elif role == 'docente' %}
-        <p>Contenido para docentes.</p>
-    {% endif %}
+<div class="container-dash my-5">
+  <h1 class="text-center">Bienvenido/a, {{ nombre_completo }}!</h1>
 
-    {% include 'footer.html'  %}
+  {% if role == 'alumno' %}
+  <div class="role row my-4">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header text-white text-center fw-bold">
+          <h2>Panel de Control para Alumnos</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-text text-center m-3">
+            ¡Bienvenido/a al área de alumnos! Aquí puedes ver tus
+            calificaciones, horarios y realizar consultas sobre tus materias.
+          </p>
+
+          <ul class="list-group text-center fw-bold">
+            <li class="list-group-item"></li>
+            <li><a href="#">....</a></li>
+            <li><a href="#">.....</a></li>
+            <li><a href="#">....</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% elif role == 'padre' %}
+  <div class="role row my-4">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header text-white text-center fw-bold">
+          <h2>Panel de Control para Padres</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-text text-center m-3">
+            Bienvenido/a al área de padres. Aquí puedes ver el progreso
+            académico de tu hijo, su asistencia, y ponerte en contacto con sus
+            profesores.
+          </p>
+
+          <ul class="list-group text-center fw-bold">
+            <li class="list-group-item"></li>
+            <li><a href="#">.......</a></li>
+            <li><a href="#">.....</a></li>
+            <li><a href="#">.....</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% elif role == 'docente' %}
+  <div class="role row my-4">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header text-white text-center fw-bold">
+          <h2>Panel de Control para Docentes</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-text text-center m-3">
+            Bienvenido/a al área de docentes. Aquí puedes gestionar tus clases,
+            asignar tareas y calificar a tus alumnos.
+          </p>
+
+          <ul class="list-group text-center fw-bold">
+            <li class="list-group-item">
+              <a href="{{ url_for('lista_alumnos') }}">Lista de alumnos</a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('lista_tareas') }}">Tareas</a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('lista_comunicados') }}">Comunicados</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p>Rol no válido. Por favor, contacte al administrador del sistema.</p>
+  {% endif %}
+</div>
+{% include 'footer.html' %}
