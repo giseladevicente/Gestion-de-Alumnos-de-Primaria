@@ -1,76 +1,81 @@
-/* Estilos generales */
+
+/* header.html  */
 body {
+    height: 100%;  
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
+    background-color: #f8f9fa;
 }
 
-header {
-    background-color: #4CAF50;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
+header h1 {
+font-size: 1.5rem; 
 }
 
-footer {
-    background-color: #4CAF50;
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
+main {
+padding: 20px;
 }
 
-/* Estilo del formulario de login */
+
+/* index.html */
 .container {
-    max-width: 600px;
-    margin: 50px auto;
-    background-color: white;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+max-width: 500px;
 }
 
-.form-label {
-    font-weight: bold;
+h2 {
+font-size: 1.8rem;
+margin-bottom: 20px;
 }
 
-input[type="text"],
-input[type="password"],
-select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+label {
+font-weight: bold;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+button[type="submit"] {
+width: 100%;
 }
 
-button:hover {
-    background-color: #45a049;
+/* Footer */
+footer {
+background-color: #343a40;
+position: relative;
+width: 100%;
+font-size: 0.8rem;
 }
 
-/* Estilo de los dashboards */
-.dashboard-content {
-    padding: 20px;
-    text-align: center;
+footer a {
+color: #f8f9fa;
+margin: 0 10px;
 }
 
-h1 {
-    color: #333;
-}
 
-.dashboard-content p {
-    font-size: 18px;
-}
+/* Media Queries */
 
+/* Medium devices (768px x 600px) */
+@media (min-width: 768px) {
+    header h1 {
+      font-size: 2rem;
+    }
+  
+    footer {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Large devices (992px x 800px) */
+  @media (min-width: 992px) {
+    header h1 {
+      font-size: 2.5rem;
+    }
+  
+    footer {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Extra large devices (1200px x 800px) */
+  @media (min-width: 1200px) {
+  
+    main {
+      padding: 30px;
+    }
+  
+  }
