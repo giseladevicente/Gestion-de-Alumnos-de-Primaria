@@ -1,28 +1,42 @@
-
-/* header.html  */
+/* Header */
 body {
-    height: 100%;  
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+  height: 100%;  
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
 }
 
 header h1 {
 font-size: 1.5rem; 
 }
 
+.h2-header {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
 main {
 padding: 20px;
 }
 
-
-/* index.html */
-.container {
-max-width: 500px;
+/* Footer */
+footer {
+  background-color: #343a40;
+  position: relative;
+  width: 100%;
+  font-size: 0.8rem;
+}
+  
+footer a {
+  color: #f8f9fa;
+  margin: 0 10px;
 }
 
-.h2-header {
-font-size: 1.8rem;
-margin-bottom: 20px;
+/* Estilos Generales  */
+.container {
+max-width: 500px;
+padding-left: 15px;
+padding-right: 15px;
+max-width: 100%;
 }
 
 label {
@@ -33,17 +47,24 @@ button[type="submit"] {
 width: 100%;
 }
 
-/* Footer */
-footer {
-background-color: #343a40;
-position: relative;
-width: 100%;
-font-size: 0.8rem;
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-footer a {
-color: #f8f9fa;
-margin: 0 10px;
+/* .form-label {
+  font-size: 1rem;
+  font-weight: 600;
+} */ 
+
+.form-control {
+  font-size: 1rem;
+  padding: 0.75rem;
+}
+
+.btn {
+  font-size: 1rem;
+  padding: 0.75rem;
 }
 
 /* dashboard.html */
@@ -54,7 +75,6 @@ margin: 0 10px;
 .card-header {
     background-color: #28a745;
 }
-
 
 .list-group-item a {
     text-decoration: none;
@@ -71,6 +91,16 @@ margin: 0 10px;
 
 /* Small devices (601px x 400px) */
 @media (min-width: 601px) {
+  h2 {
+    font-size: 2rem;
+  }
+
+
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
   .list-group-item {
     width: 50%;
     margin: 0 auto;
@@ -94,6 +124,19 @@ margin: 0 10px;
 
     .role {
         justify-content: center;
+    }
+
+    .form-control {
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+    }
+
+    .alert {
+      font-size: 1.1rem;
     }
 
 }

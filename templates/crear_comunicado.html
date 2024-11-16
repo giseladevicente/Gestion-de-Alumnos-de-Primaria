@@ -1,0 +1,47 @@
+{% include 'header.html' %}
+
+<div class="container my-5">
+  <h2 class="text-center text-primary mb-4">Crear Comunicado General</h2>
+
+  {% if mensaje %}
+  <div class="alert alert-success mb-4">
+    {{ mensaje }}
+    <!-- Mensaje de éxito -->
+  </div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('crear_comunicado') }}">
+    <div class="mb-3">
+      <textarea
+        class="form-control"
+        id="contenido"
+        name="contenido"
+        rows="4"
+        placeholder="Ingrese el contenido del comunicado aquí..."
+        required
+      ></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 w-md-auto">
+      <i class="bi bi-plus-circle"></i>
+      Crear Comunicado
+    </button>
+  </form>
+
+  <div class="text-center mt-4">
+    <div class="d-flex justify-content-center gap-3">
+      <a
+        href="{{ url_for('lista_comunicados') }}"
+        class="btn btn-secondary w-100 w-md-auto"
+      >
+        <i class="bi bi-arrow-left"></i> Regresar a la Lista de Comunicados
+      </a>
+
+      <a
+        href="{{ url_for('dashboard') }}"
+        class="btn btn-secondary w-100 w-md-auto"
+        ><i class="bi bi-arrow-left"></i> Regresar al Panel de Control</a
+      >
+    </div>
+  </div>
+</div>
+{% include 'footer.html' %}

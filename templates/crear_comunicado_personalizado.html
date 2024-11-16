@@ -1,0 +1,61 @@
+{% include 'header.html' %}
+
+<div class="bg-primary text-white text-center py-3">
+  <h2>Crear Comunicado Personalizado</h2>
+</div>
+
+<div class="container mt-4">
+  <form action="/crear_comunicado_personalizado" method="POST">
+    <!-- Destinatario -->
+    <div class="mb-3">
+      <label for="tipo_destinatario" class="form-label"
+        >Seleccionar Tipo de Destinatario</label
+      >
+      <select
+        id="tipo_destinatario"
+        name="tipo_destinatario"
+        class="form-select"
+        required
+      >
+        <option value="" disabled selected>Seleccione un tipo</option>
+        <option value="alumno">Alumno</option>
+        <option value="padre">Padre</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="destinatario" class="form-label"
+        >Seleccionar Destinatario</label
+      >
+      <select
+        id="destinatario"
+        name="destinatario"
+        class="form-select"
+        required
+      >
+        <option value="" disabled selected>Seleccione un destinatario</option>
+        {% for usuario in usuarios %}
+        <option value="{{ usuario[0] }}">{{ usuario[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <!-- Comunicado -->
+    <div class="mb-3">
+      <label for="contenido" class="form-label">Contenido del Comunicado</label>
+      <textarea
+        id="contenido"
+        name="contenido"
+        class="form-control"
+        rows="5"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Botones-->
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">Enviar Comunicado</button>
+      <a href="/dashboard" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% include 'footer.html' %}

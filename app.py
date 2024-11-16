@@ -1,14 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 from config import Config
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
 app = Flask(__name__)
+app.config.from_object(Config)
 
 mysql = MySQL()
-app.config.from_object(Config)
-mysql.init_app(app)  
+mysql.init_app(app)
 
 @app.route('/')
 def index():
@@ -23,15 +22,31 @@ def register():
         password = request.form['password']
         role = request.form['role']
         
-        hashed_password = generate_password_hash(password) # Se encripta la contraseña
+        # Verificación correo electrónico
+        cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
+        if cur.fetchone():
+            return "Correo electrónico ya registrado", 400
+        else:
+            hashed_password = generate_password_hash(password) # Se encripta la contraseña
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO usuarios (nombre_completo, correo_electronico, contraseña, rol) VALUES (%s, %s, %s, %s)", 
-                    (nombre_completo, correo_electronico, hashed_password, role))
-        mysql.connection.commit()
-        cur.close()
-        
-        return redirect(url_for('index'))
+            # tabla usuarios
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO usuarios (nombre_completo, correo_electronico, contraseña, rol) VALUES (%s, %s, %s, %s)", 
+                        (nombre_completo, correo_electronico, hashed_password, role))
+            mysql.connection.commit()
+            
+            cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
+            user_id = cur.fetchone()[0] # ID del usuario
+
+            # Ingreso de Alumno en perfiles_alumnos 
+            if role == 'alumno':
+                cur.execute("INSERT INTO perfiles_alumnos (alumno_id, nombre_completo) VALUES (%s, %s)", 
+                            (user_id, nombre_completo))
+                mysql.connection.commit()
+            
+            cur.close()
+            
+            return redirect(url_for('index'))
 
     return render_template('register.html')
 
@@ -39,39 +54,178 @@ def register():
 # Inicio de Sesión - index.html
 @app.route('/login', methods=['POST'])
 def login():
-    correo = request.form['email']  
+    correo = request.form['email']
     password = request.form['password']
-    role = request.form['role']
 
-    # Verificar el usuario en la base de datos
+    # Verificación del usuario
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM usuarios WHERE correo_electronico = %s AND rol = %s", (correo, role))  # Aquí cambiamos 'username' por 'correo_electronico'
+    cur.execute("SELECT * FROM usuarios WHERE correo_electronico = %s", (correo,))
     user = cur.fetchone()
     cur.close()
 
-    if user and check_password_hash(user[3], password):  # Usar el índice para la contraseña (tercer campo de la consulta)
-        return redirect(url_for('dashboard', role=role))
+    if user and check_password_hash(user[3], password):
+        session['user_id'] = user[0]
+        session['nombre_completo'] = user[1]
+        session['role'] = user[4]
+        return redirect(url_for('dashboard'))
     else:
-        return redirect(url_for('index'))   
+        return redirect(url_for('index'))
 
+# Contenido según rol - dashboard.html
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+    
+    role = session.get('role')
+    nombre_completo = session.get('nombre_completo')
+    
+    return render_template('dashboard.html', role=role, nombre_completo=nombre_completo)
 
-# Contenido según rol
-@app.route('/dashboard/<role>')
-def dashboard(role):
-    return render_template('dashboard.html', role=role) 
-
-
-@app.route('/add', methods=['POST'])
-def add():
-    nombre = request.form['nombre']
-    apellido = request.form['apellido']
-    edad = request.form['edad']
-    curso = request.form['curso']
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO alumnos (nombre, apellido, edad, curso) VALUES (%s, %s, %s, %s)", (nombre, apellido, edad, curso))
-    mysql.connection.commit()
-    cur.close()
+@app.route('/logout')
+def logout():
+    session.clear()
     return redirect(url_for('index'))
+
+
+# ALUMNOS
+@app.route('/lista_alumnos')
+def lista_alumnos():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT u.nombre_completo
+        FROM perfiles_alumnos pa
+        JOIN usuarios u ON pa.alumno_id = u.id
+    """)
+    alumnos = cur.fetchall()
+    cur.close()
+    return render_template('lista_alumnos.html', alumnos=alumnos)
+
+
+# TAREAS
+@app.route('/crear_tarea', methods=['GET', 'POST'])
+def crear_tarea():
+    if 'user_id' not in session or session.get('role') != 'docente':
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        descripcion = request.form['descripcion']
+        fecha_entrega = request.form['fecha_entrega']
+        archivo_adjunto = request.files['archivo_adjunto']
+
+        # Archivo adjunto
+        archivo_nombre = None
+        if archivo_adjunto:
+            archivo_nombre = archivo_adjunto.filename
+            archivo_adjunto.save(f"uploads/{archivo_nombre}")
+
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO tareas_examenes (docente_id, titulo, descripcion, fecha_entrega, archivo_adjunto) "
+                    "VALUES (%s, %s, %s, %s, %s)", 
+                    (session['user_id'], titulo, descripcion, fecha_entrega, archivo_nombre))
+        mysql.connection.commit()
+        cur.close()
+
+        return redirect(url_for('lista_tareas'))  # Redirigir a la lista de tareas
+
+    return render_template('crear_tarea.html')
+
+
+@app.route('/lista_tareas')
+def lista_tareas():
+    if 'user_id' not in session or session.get('role') != 'docente':
+        return redirect(url_for('index'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, titulo, descripcion, fecha_entrega, archivo_adjunto FROM tareas_examenes WHERE docente_id = %s", 
+                (session['user_id'],))
+    tareas = cur.fetchall()
+    cur.close()
+
+    return render_template('lista_tareas.html', tareas=tareas)
+
+
+# COMUNICADOS
+@app.route('/crear_comunicado', methods=['GET', 'POST'])
+def crear_comunicado():
+    if 'user_id' not in session or session.get('role') != 'docente':
+        return redirect(url_for('index'))  
+
+    mensaje = None  # variable que almacena mensaje de éxito
+
+    if request.method == 'POST':  
+        contenido = request.form['contenido']  
+
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "INSERT INTO comunicados (docente_id, tipo_comunicado, contenido) VALUES (%s, %s, %s)",
+            (session['user_id'], 'general', contenido)
+        )
+        mysql.connection.commit()  
+        cur.close()
+
+        mensaje = "Comunicado general creado exitosamente."
+        
+        return redirect(url_for('lista_comunicados', mensaje=mensaje))
+
+    return render_template('crear_comunicado.html', mensaje=mensaje)  
+
+
+@app.route('/comunicados')
+def lista_comunicados():
+    if 'user_id' not in session:
+        return redirect(url_for('index'))  
+
+    mensaje = request.args.get('mensaje') 
+
+    cur = mysql.connection.cursor()
+    cur.execute(
+        """ SELECT c.contenido, c.fecha_envio, c.tipo_comunicado
+        FROM comunicados c
+        ORDER BY c.fecha_envio DESC """)
+    comunicados = cur.fetchall() 
+    cur.close()
+
+    return render_template('lista_comunicados.html', comunicados=comunicados, mensaje=mensaje)
+
+
+# COMUNICADOS PERSONALIZADOS
+@app.route('/crear_comunicado_personalizado', methods=['GET', 'POST'])
+def crear_comunicado_personalizado():
+    if 'user_id' not in session or session.get('role') != 'docente':
+        return redirect(url_for('index'))  
+
+    if request.method == 'POST':  
+        tipo_destinatario = request.form['tipo_destinatario']
+        destinatario = request.form['destinatario']
+        contenido = request.form['contenido']
+
+        tipo_comunicado = 'personalizado'
+
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "INSERT INTO comunicados (docente_id, tipo_comunicado, contenido) VALUES (%s, %s, %s)",
+            (session['user_id'], tipo_comunicado, contenido)
+        )
+        comunicado_id = cur.lastrowid  # Obtiene el ID del comunicado recién creado
+
+        cur.execute(
+            "INSERT INTO comunicados_destinatarios (comunicado_id, usuario_id) VALUES (%s, %s)",
+            (comunicado_id, destinatario)
+        )
+        mysql.connection.commit()
+        cur.close()
+
+        return redirect(url_for('lista_comunicados'))
+
+    # Alumnos y Padres
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol IN ('alumno', 'padre')")
+    usuarios = cur.fetchall()
+    cur.close()
+
+    return render_template('crear_comunicado_personalizado.html', usuarios=usuarios)
 
 
 if __name__ == '__main__':
