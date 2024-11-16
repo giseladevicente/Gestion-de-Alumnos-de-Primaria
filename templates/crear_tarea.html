@@ -1,53 +1,73 @@
 {% include 'header.html' %}
 
-<h2>Crear Nueva Tarea</h2>
-<form
-  action="{{ url_for('crear_tarea') }}"
-  method="POST"
-  enctype="multipart/form-data"
->
-  <div class="mb-3">
-    <label for="titulo" class="form-label">Título</label>
-    <input
-      type="text"
-      class="form-control"
-      id="titulo"
-      name="titulo"
-      required
-    />
-  </div>
-  <div class="mb-3">
-    <label for="descripcion" class="form-label">Descripción</label>
-    <textarea
-      class="form-control"
-      id="descripcion"
-      name="descripcion"
-      rows="4"
-      required
-    ></textarea>
-  </div>
-  <div class="mb-3">
-    <label for="fecha_entrega" class="form-label">Fecha de Entrega</label>
-    <input
-      type="date"
-      class="form-control"
-      id="fecha_entrega"
-      name="fecha_entrega"
-      required
-    />
-  </div>
-  <div class="mb-3">
-    <label for="archivo_adjunto" class="form-label"
-      >Archivo Adjunto (Opcional)</label
-    >
-    <input
-      type="file"
-      class="form-control"
-      id="archivo_adjunto"
-      name="archivo_adjunto"
-    />
-  </div>
-  <button type="submit" class="btn btn-primary">Crear Tarea</button>
-</form>
+<div class="container my-5">
+  <h2 class="text-center text-primary mb-4">Crear Nueva Tarea</h2>
+  <form
+    action="{{ url_for('crear_tarea') }}"
+    method="POST"
+    enctype="multipart/form-data"
+    class="needs-validation"
+    novalidate
+  >
+    <div class="mb-4">
+      <label for="titulo" class="form-label fw-bold">Título</label>
+      <input
+        type="text"
+        class="form-control"
+        id="titulo"
+        name="titulo"
+        placeholder="Ingrese el título de la tarea"
+        required
+      />
+    </div>
+    <div class="mb-4">
+      <label for="descripcion" class="form-label fw-bold">Descripción</label>
+      <textarea
+        class="form-control"
+        id="descripcion"
+        name="descripcion"
+        rows="4"
+        placeholder="Escriba una breve descripción"
+        required
+      ></textarea>
+    </div>
+    <div class="mb-4">
+      <label for="fecha_entrega" class="form-label fw-bold"
+        >Fecha de Entrega</label
+      >
+      <input
+        type="date"
+        class="form-control"
+        id="fecha_entrega"
+        name="fecha_entrega"
+        required
+      />
+    </div>
+    <div class="mb-4">
+      <label for="archivo_adjunto" class="form-label fw-bold"
+        >Archivo Adjunto (Opcional)</label
+      >
+      <input
+        type="file"
+        class="form-control"
+        id="archivo_adjunto"
+        name="archivo_adjunto"
+      />
+    </div>
 
+    <!-- Botón Crear Tarea-->
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="bi bi-plus-circle"></i> Crear Tarea
+      </button>
+    </div>
+  </form>
+
+  <!-- Botón Volver -->
+  <div class="mt-4 text-center">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+      <i class="bi bi-arrow-left"></i> Volver al Panel
+    </a>
+  </div>
+</div>
 {% include 'footer.html' %}
