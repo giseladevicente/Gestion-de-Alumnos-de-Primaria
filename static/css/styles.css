@@ -6,7 +6,7 @@ body {
 }
 
 header h1 {
-font-size: 1.5rem; 
+  font-size: 1.5rem; 
 }
 
 .h2-header {
@@ -15,8 +15,27 @@ font-size: 1.5rem;
 }
 
 main {
-padding: 20px;
+  padding: 20px;
 }
+
+.navbar-toggler {
+  border-color: #ffffff80;
+}
+
+.navbar-nav .nav-link {
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #d3d3d3;
+}
+
+.navbar-nav .nav-item {
+  margin-left: 1rem;
+}
+
+
 
 /* Footer */
 footer {
@@ -33,29 +52,24 @@ footer a {
 
 /* Estilos Generales  */
 .container {
-max-width: 500px;
-padding-left: 15px;
-padding-right: 15px;
-max-width: 100%;
+  max-width: 500px;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 100%;
 }
 
 label {
-font-weight: bold;
+  font-weight: bold;
 }
 
 button[type="submit"] {
-width: 100%;
+  width: 100%;
 }
 
 h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-
-/* .form-label {
-  font-size: 1rem;
-  font-weight: 600;
-} */ 
 
 .form-control {
   font-size: 1rem;
@@ -69,22 +83,24 @@ h2 {
 
 /* dashboard.html */
 .card {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .card-header {
-    background-color: #28a745;
+  background-color: #28a745;
 }
 
 .list-group-item a {
-    text-decoration: none;
-    color: #007bff;
+  text-decoration: none;
+  color: #007bff;
 }
 
 .list-group-item a:hover {
-    text-decoration: underline;
-    color: #0056b3;
+  text-decoration: underline;
+  color: #0056b3;
 }
+
+
 
 
 /* Media Queries */
@@ -94,7 +110,6 @@ h2 {
   h2 {
     font-size: 2rem;
   }
-
 
   .container {
     max-width: 500px;
@@ -109,68 +124,74 @@ h2 {
 
 /* Medium devices (768px x 600px) */
 @media (min-width: 768px) {
-    header h1 {
-      font-size: 2rem;
-    }
-  
-    footer {
-      font-size: 0.9rem;
-    }
-  
-    .col-md-8 {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
+  header h1 {
+    font-size: 2rem;
+  }
 
-    .role {
-        justify-content: center;
-    }
+  footer {
+    font-size: 0.9rem;
+  }
 
-    .form-control {
-      font-size: 1.1rem;
-    }
+  .col-md-8 {
+      padding-left: 30px;
+      padding-right: 30px;
+  }
 
-    .btn {
-      font-size: 1.1rem;
-      padding: 1rem 2rem;
-    }
+  .role {
+      justify-content: center;
+  }
 
-    .alert {
-      font-size: 1.1rem;
-    }
+  .form-control {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+  }
+
+  .alert {
+    font-size: 1.1rem;
+  }
 
 }
 
 /* Large devices (992px x 800px) */
 @media (min-width: 992px) {
-    header h1 {
-      font-size: 2.5rem;
-    }
-  
-    footer {
-      font-size: 1rem;
-    }
+  header h1 {
+    font-size: 2.5rem;
+  }
 
-    .card-header {
-        font-size: 1.5rem; 
-    }
+  .navbar-nav .nav-item {
+    margin-left: 2rem;
+  }
 
-    .container-dash {
-        padding-top: 40px;
-        padding-bottom: 40px;
-    }
+  footer {
+    font-size: 1rem;
+  }
 
-    .card-body p {
-        font-size: 1.1rem;
-    }
+  .card-header {
+      font-size: 1.5rem; 
+  }
+
+  .container-dash {
+      padding-top: 40px;
+      padding-bottom: 40px;
+  }
+
+  .card-body p {
+      font-size: 1.1rem;
+  }
 
 }
   
   /* Extra large devices (1200px x 800px) */
 @media (min-width: 1200px) {
   
-    main {
-      padding: 30px;
-    }
+  main {
+    padding: 30px;
+  }
   
 }
+
+
