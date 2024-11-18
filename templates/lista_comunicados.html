@@ -3,26 +3,56 @@
 <div class="container my-5">
   <h2 class="text-center text-primary mb-4">Lista de Comunicados</h2>
 
-  {% if comunicados %}
+  {% if mensaje %}
+  <div class="alert alert-info text-center">{{ mensaje }}</div>
+  {% endif %} {% if comunicados %}
   <div class="table-responsive">
-    <table class="table table-striped table-bordered align-middle">
-      <thead class="table-primary text-center">
-        <tr>
-          <th>Contenido</th>
-          <th>Fecha de Envío</th>
-          <th>Tipo de Comunicado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for comunicado in comunicados %}
-        <tr class="text-center tr-list-comun">
-          <td>{{ comunicado[0] }}</td>
-          <td>{{ comunicado[1] }}</td>
-          <td>{{ comunicado[2] | capitalize}}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% for comunicado in comunicados %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <strong>Comunicado: {{ comunicado[3] | capitalize }}</strong>
+      </div>
+      <div class="card-body">
+        <p><strong>Contenido:</strong> {{ comunicado[1] }}</p>
+        <p><em>Fecha de Envío: {{ comunicado[2] }}</em></p>
+
+        <!-- Mostrar Respuestas -->
+        {% if comunicado[4] %}
+        <div class="mt-3">
+          <h5>Respuestas:</h5>
+          <ul class="list-group">
+            {% for respuesta in comunicado[4] %}
+            <li class="list-group-item">
+              <strong>{{ respuesta[1] }}:</strong> {{ respuesta[0] }}
+              <em class="text-muted">({{ respuesta[2] }})</em>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% else %}
+        <p class="text-muted">No hay respuestas aún.</p>
+        {% endif %}
+
+        <!-- Formulario para Responder -->
+        {% if session.get('role') != 'docente' %}
+        <form
+          action="{{ url_for('responder_comunicado', comunicado_id=comunicado[0]) }}"
+          method="POST"
+          class="mt-4"
+        >
+          <textarea
+            name="respuesta"
+            rows="3"
+            class="form-control"
+            placeholder="Escribe tu respuesta aquí..."
+            required
+          ></textarea>
+          <button type="submit" class="btn btn-primary mt-3">Responder</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
   </div>
   {% else %}
   <p class="text-center text-muted">
@@ -31,25 +61,18 @@
   {% endif %}
 
   <!-- Botones -->
-  {% if session.get('role') == 'docente' %}
-  <div class="mb-4 d-flex flex-wrap justify-content-center gap-3">
+  <div class="mt-4 d-flex justify-content-center gap-3">
+    {% if session.get('role') == 'docente' %}
     <a href="{{ url_for('crear_comunicado') }}" class="btn btn-primary">
       <i class="bi bi-megaphone"></i> Crear Comunicado General</a
     >
     <a
       href="{{ url_for('crear_comunicado_personalizado') }}"
-      class="btn btn-primary my-4"
+      class="btn btn-primary"
     >
       <i class="bi bi-megaphone"></i> Crear Comunicado Personalizado</a
     >
-    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary my-4">
-      <i class="bi bi-arrow-left"> </i>Regresar al Panel de Control</a
-    >
-  </div>
-  {% endif %}
-
-  <!-- Botones -->
-  <div class="mt-4 d-flex justify-content-center gap-3">
+    {% endif %}
     <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
       <i class="bi bi-arrow-left"></i> Regresar al Panel de Control
     </a>
