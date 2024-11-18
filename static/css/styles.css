@@ -100,6 +100,37 @@ h2 {
   color: #0056b3;
 }
 
+.btn_alumno {
+  margin: 0 auto;
+}
+
+
+/* formulario de tareas */
+.task-container {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.task-container p {
+  color: #555;
+  font-size: 1rem;
+}
+
+.form-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Botones */
+.btn {
+  font-size: 1.1rem;
+  padding: 10px 20px;
+}
 
 
 
@@ -154,6 +185,15 @@ h2 {
     font-size: 1.1rem;
   }
 
+  .task-container {
+    padding: 20px;
+}
+
+.form-select {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
 }
 
 /* Large devices (992px x 800px) */
@@ -182,6 +222,35 @@ h2 {
   .card-body p {
       font-size: 1.1rem;
   }
+    .task-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .task-container h4 {
+      margin-bottom: 10px;
+  }
+
+  .form-select {
+      max-width: 200px;
+  }
+
+  .task-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-container h4 {
+      margin-bottom: 10px;
+  }
+
+  .form-select {
+      max-width: 200px;
+  }
 
 }
   
@@ -190,6 +259,21 @@ h2 {
   
   main {
     padding: 30px;
+  }
+
+    .task-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .task-container h4 {
+      margin-bottom: 10px;
+  }
+
+  .form-select {
+      max-width: 200px;
   }
   
 }

@@ -7,21 +7,25 @@
   <div class="role row my-4">
     <div class="col-12 col-md-8 col-lg-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold">
-          <h2>Panel de Control para Alumnos</h2>
+        <div class="card-header text-center fw-bold">
+          <h2 class="text-white">Panel de Control para Alumnos</h2>
         </div>
         <div class="card-body">
           <p class="card-text text-center m-3">
-            ¡Bienvenido/a al área de alumnos! Aquí puedes ver tus
-            calificaciones, horarios y realizar consultas sobre tus materias.
+            ¡Bienvenido/a al área de alumnos! Aquí puedes ver tus tareas,
+            comunicados generales y comunicados personalizados.
           </p>
 
-          <ul class="list-group text-center fw-bold">
-            <li class="list-group-item"></li>
-            <li><a href="#">....</a></li>
-            <li><a href="#">.....</a></li>
-            <li><a href="#">....</a></li>
-          </ul>
+          <a
+            href="{{ url_for('tareas_alumno') }}"
+            class="btn btn-primary d-flex justify-content-center mx-auto my-4"
+            >Tareas</a
+          >
+          <a
+            href="{{ url_for('lista_comunicados') }}"
+            class="btn btn-primary d-flex justify-content-center mx-auto"
+            >Comunicados</a
+          >
         </div>
       </div>
     </div>
@@ -40,12 +44,23 @@
             académico de tu hijo, su asistencia, y ponerte en contacto con sus
             profesores.
           </p>
-
           <ul class="list-group text-center fw-bold">
-            <li class="list-group-item"></li>
-            <li><a href="#">.......</a></li>
-            <li><a href="#">.....</a></li>
-            <li><a href="#">.....</a></li>
+            <li class="list-group-item">
+              <a href="{{ url_for('lista_comunicados') }}">
+                <i class="bi bi-megaphone"></i> Ver Comunicados Personalizados
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('perfil_alumno') }}">
+                <i class="bi bi-person-lines-fill"></i> Ingresar al Perfil del
+                Alumno
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="{{ url_for('progreso_hijo') }}">
+                <i class="bi bi-bar-chart-line"></i> Ver Progreso Académico
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -67,13 +82,19 @@
 
           <ul class="list-group text-center fw-bold">
             <li class="list-group-item">
-              <a href="{{ url_for('lista_alumnos') }}">Lista de alumnos</a>
+              <a href="{{ url_for('lista_alumnos') }}"
+                ><i class="bi bi-person-check"></i> Lista de alumnos</a
+              >
             </li>
             <li class="list-group-item">
-              <a href="{{ url_for('lista_tareas') }}">Tareas</a>
+              <a href="{{ url_for('lista_tareas') }}"
+                ><i class="bi bi-file-earmark-text"></i> Tareas</a
+              >
             </li>
             <li class="list-group-item">
-              <a href="{{ url_for('lista_comunicados') }}">Comunicados</a>
+              <a href="{{ url_for('lista_comunicados') }}"
+                ><i class="bi bi-megaphone"></i> Comunicados</a
+              >
             </li>
           </ul>
         </div>

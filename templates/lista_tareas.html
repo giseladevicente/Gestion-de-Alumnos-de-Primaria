@@ -25,10 +25,12 @@
             {% if tarea[4] %}
             <a
               href="{{ url_for('static', filename='uploads/' + tarea[4]) }}"
-              target="_blank" class="btn btn-sm btn-outline-info"
+              target="_blank"
+              class="btn btn-sm btn-outline-info"
               >Ver archivo</a
             >
-            {% else %} <span class="text-muted">No hay archivo adjunto</span> {% endif %}
+            {% else %} <span class="text-muted">No hay archivo adjunto</span> {%
+            endif %}
           </td>
         </tr>
         {% endfor %}
