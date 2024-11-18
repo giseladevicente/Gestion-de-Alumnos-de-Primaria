@@ -195,19 +195,29 @@ def crear_comunicado():
 @app.route('/comunicados')
 def lista_comunicados():
     if 'user_id' not in session:
-        return redirect(url_for('index'))  
+        return redirect(url_for('index'))
 
-    mensaje = request.args.get('mensaje') 
+    mensaje = request.args.get('mensaje')
 
     cur = mysql.connection.cursor()
-    cur.execute(
-        """ SELECT c.contenido, c.fecha_envio, c.tipo_comunicado
+    cur.execute("""
+        SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
+        (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
+         FROM respuestas_comunicados r
+         JOIN usuarios u ON r.remitente_id = u.id
+         WHERE r.comunicado_id = c.id) AS respuestas
         FROM comunicados c
-        ORDER BY c.fecha_envio DESC """)
-    comunicados = cur.fetchall() 
+        ORDER BY c.fecha_envio DESC
+    """)
+    comunicados = cur.fetchall()
     cur.close()
 
-    return render_template('lista_comunicados.html', comunicados=comunicados, mensaje=mensaje)
+    comunicados_format = [
+        (row[0], row[1], row[2], row[3], eval(row[4]) if row[4] else None)
+        for row in comunicados
+    ]
+
+    return render_template('lista_comunicados.html', comunicados=comunicados_format, mensaje=mensaje)
 
 
 # COMUNICADOS PERSONALIZADOS
@@ -217,11 +227,9 @@ def crear_comunicado_personalizado():
         return redirect(url_for('index'))  
 
     if request.method == 'POST':  
-        tipo_destinatario = request.form['tipo_destinatario']
         destinatario = request.form['destinatario']
         contenido = request.form['contenido']
-
-        tipo_comunicado = 'personalizado'
+        tipo_comunicado = request.form['personalizado']
 
         cur = mysql.connection.cursor()
         cur.execute(
@@ -237,18 +245,14 @@ def crear_comunicado_personalizado():
         mysql.connection.commit()
         cur.close()
 
-        return redirect(url_for('lista_comunicados'))
-
-    # Alumnos y Padres
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol IN ('alumno', 'padre')")
-    usuarios = cur.fetchall()
-    cur.close()
-
-    return render_template('crear_comunicado_personalizado.html', usuarios=usuarios)
+        return redirect(url_for('lista_comunicados', mensaje='Comunicado creado con éxito.'))
+    
+    return render_template('crear_comunicado_personalizado.html')
 
 
 # PERFIL ALUMNO
+
+### ESTADOS DE TAREAS
 @app.route('/tareas_alumno', methods=['GET', 'POST'])
 def tareas_alumno():
     if 'user_id' not in session:
@@ -310,6 +314,27 @@ def tareas_alumno():
     cur.close()
 
     return render_template('tareas_alumno.html', tareas=tareas, nombre_completo=session['nombre_completo'])
+
+
+### RESPONDER COMUNICADOS
+@app.route('/responder_comunicado/<int:comunicado_id>', methods=['POST'])
+def responder_comunicado(comunicado_id):
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+
+    respuesta = request.form['respuesta']
+    if not respuesta:
+        return redirect(url_for('lista_comunicados', mensaje='La respuesta no puede estar vacía.'))
+
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "INSERT INTO respuestas_comunicados (comunicado_id, remitente_id, respuesta) VALUES (%s, %s, %s)",
+        (comunicado_id, session['user_id'], respuesta)
+    )
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for('lista_comunicados', mensaje='Respuesta enviada con éxito.'))
 
 
 
