@@ -1,0 +1,9 @@
+{% include 'header.html' %}
+
+<div class="container mt-5 text-center">
+  <h1 class="text-success">¡Registro Exitoso!</h1>
+  <p class="lead">{{ mensaje }}</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Ir al Inicio</a>
+</div>
+
+{% include 'footer.html' %}
