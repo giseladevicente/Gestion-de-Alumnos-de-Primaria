@@ -4,5 +4,6 @@ class Config:
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = 'root123'  
     MYSQL_DB = 'gestion_alumnos' 
+    SECRET_KEY = 'secret' 
 
 
