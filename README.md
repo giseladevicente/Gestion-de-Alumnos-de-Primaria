@@ -1,6 +1,16 @@
+- **Nombre y Apellido**: Gisela Soledad De Vicente
+- **DNI**: 31877130
+- **Correo electrónico**: gdevicente@alumnos.kennedy.edu.ar
+- **Materia**: Taller de Proyectos II - Sec: 24514
+- **Carrera**: Tecnicatura Universitaria en tecnologías de la información
+- **Fecha de entrega**: 19/11/2024
+- **Nombre del informe**: Sistema de Gestión de Alumnos de Primaria
+
+
 # Proyecto Sistema de Gestión de Alumnos de Primaria
 
 Este proyecto es una aplicación web desarrollada en Flask que gestiona el registro, asignación de tareas y comunicación entre docentes, alumnos y padres. Está diseñado para facilitar la interacción entre los usuarios, de acuerdo con sus roles, y mejorar la organización del trabajo escolar.
+
 
 ## Instrucciones para Ejecutar el Proyecto
 
