@@ -331,7 +331,6 @@ def tareas_alumno():
     """, (alumno_id, alumno_id))
     mysql.connection.commit()
 
-    # Consultar tareas con sus estados
     estado = request.args.get('estado', 'todas')
     consulta = """
         SELECT te.id AS tarea_id, 
@@ -353,6 +352,28 @@ def tareas_alumno():
     cur.close()
 
     return render_template('tareas_alumno.html', tareas=tareas, nombre_completo=session['nombre_completo'])
+
+
+@app.route('/marcar_comunicado_leido/<int:comunicado_id>', methods=['POST'])
+def marcar_comunicado_leido(comunicado_id):
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+
+    cur = mysql.connection.cursor()
+
+    cur.execute(
+        """
+        UPDATE comunicados_destinatarios
+        SET leido = TRUE
+        WHERE comunicado_id = %s AND usuario_id = %s
+        """,
+        (comunicado_id, session['user_id'])
+    )
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for('lista_comunicados', mensaje='Comunicado marcado como leído.'))
 
 
 ### RESPONDER COMUNICADOS
