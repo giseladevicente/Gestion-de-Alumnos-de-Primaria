@@ -3,9 +3,7 @@
 <div class="container my-5">
   <h2 class="text-center text-primary mb-4">Lista de Comunicados</h2>
 
-  {% if mensaje %}
-  <div class="alert alert-info text-center">{{ mensaje }}</div>
-  {% endif %} {% if comunicados %}
+  {% if comunicados %}
   <div class="table-responsive">
     {% for comunicado in comunicados %}
     <div class="card mb-4">
@@ -61,22 +59,22 @@
   {% endif %}
 
   <!-- Botones -->
-  <div class="mt-4 d-flex justify-content-center gap-3">
-    {% if session.get('role') == 'docente' %}
+  {% if session.get('role') == 'docente' %}
+  <div class="mb-4 d-flex flex-wrap justify-content-center gap-3">
     <a href="{{ url_for('crear_comunicado') }}" class="btn btn-primary">
       <i class="bi bi-megaphone"></i> Crear Comunicado General</a
     >
     <a
       href="{{ url_for('crear_comunicado_personalizado') }}"
-      class="btn btn-primary"
+      class="btn btn-primary my-4"
     >
       <i class="bi bi-megaphone"></i> Crear Comunicado Personalizado</a
     >
-    {% endif %}
-    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
-      <i class="bi bi-arrow-left"></i> Regresar al Panel de Control
-    </a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary my-4">
+      <i class="bi bi-arrow-left"> </i>Regresar al Panel de Control</a
+    >
   </div>
+  {% endif %}
 </div>
 
 {% include 'footer.html' %}
