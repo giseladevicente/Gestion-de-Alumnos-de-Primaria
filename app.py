@@ -2,7 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 from config import Config
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from MySQLdb.cursors import DictCursor
+import uuid
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -58,6 +62,7 @@ def register():
 def login():
     correo = request.form['email']
     password = request.form['password']
+    rol_ingresado = request.form['role'] 
 
     # Verificación del usuario
     cur = mysql.connection.cursor()
@@ -65,13 +70,25 @@ def login():
     user = cur.fetchone()
     cur.close()
 
-    if user and check_password_hash(user[3], password):
-        session['user_id'] = user[0]
-        session['nombre_completo'] = user[1]
-        session['role'] = user[4]
-        return redirect(url_for('dashboard'))
-    else:
-        return redirect(url_for('index'))
+    # Validaciones
+    if not user:
+        error = "El correo ingresado no está registrado."
+        return render_template('index.html', error=error)
+
+    if not check_password_hash(user[3], password):
+        error = "La contraseña es incorrecta."
+        return render_template('index.html', error=error)
+    
+    if user[4] != rol_ingresado:
+        error = "El rol ingresado no coincide con el registrado."
+        return render_template('index.html', error=error)
+    
+     # Inicio de sesión exitoso
+    session['user_id'] = user[0]
+    session['nombre_completo'] = user[1]
+    session['role'] = user[4]
+    return redirect(url_for('dashboard'))
+
 
 # Contenido según rol - dashboard.html
 @app.route('/dashboard')

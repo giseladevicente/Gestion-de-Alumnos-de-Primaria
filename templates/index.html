@@ -39,6 +39,10 @@
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+
+        {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
       </form>
 
       <p class="text-center mt-3">
