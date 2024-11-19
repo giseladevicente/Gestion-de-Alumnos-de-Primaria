@@ -332,7 +332,8 @@ def tareas_alumno():
     mysql.connection.commit()
 
     # Consultar tareas con sus estados
-    cur.execute("""
+    estado = request.args.get('estado', 'todas')
+    consulta = """
         SELECT te.id AS tarea_id, 
                te.titulo, 
                te.descripcion, 
@@ -341,7 +342,13 @@ def tareas_alumno():
         FROM tareas_examenes te
         LEFT JOIN tareas_alumnos ta 
         ON te.id = ta.tarea_id AND ta.alumno_id = %s
-    """, (alumno_id,))
+    """
+
+    if estado == 'pendientes':
+        consulta += " WHERE COALESCE(ta.estado, 'pendiente') = 'pendiente'"
+    elif estado == 'completadas':
+        consulta += " WHERE COALESCE(ta.estado, 'pendiente') = 'completada'"
+    cur.execute(consulta, (alumno_id,))
     tareas = cur.fetchall()
     cur.close()
 

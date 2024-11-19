@@ -4,11 +4,26 @@
   <h2 class="text-center text-primary mb-4">Perfil de {{ nombre_completo }}</h2>
 
   <h3 class="text-center mb-3">Tareas Asignadas</h3>
+
+  <!-- Botones filtrar tareas -->
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{{ url_for('tareas_alumno', estado='todas') }}" class="btn btn-info">Todas</a>
+    <a href="{{ url_for('tareas_alumno', estado='pendientes') }}" class="btn btn-warning mx-2">Pendientes</a>
+    <a href="{{ url_for('tareas_alumno', estado='completadas') }}" class="btn btn-success">Completadas</a>
+  </div>
+
   {% if tareas %}
   <form action="{{ url_for('tareas_alumno') }}" method="POST">
     {% for tarea in tareas %}
     <div class="task-container mb-4">
-      <h4>{{ tarea['titulo'] }} ({{ tarea['fecha_entrega'] }})</h4>
+      <h4>{{ tarea['titulo'] }} ({{ tarea['fecha_entrega'] }}) </h4>
+        <div class="fw-bold mb-2">
+          {% if tarea['estado'] == 'pendiente' %}
+          <i class="bi bi-circle text-warning"></i> Pendiente
+          {% else %}
+          <i class="bi bi-check-circle text-success"></i> Completada
+          {% endif %}
+      </div>
       <p>{{ tarea['descripcion'] }}</p>
       <div class="form-group">
         <label class="form-label">Estado:</label>
