@@ -2,10 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 from config import Config
 from werkzeug.security import check_password_hash, generate_password_hash
-from werkzeug.utils import secure_filename
 from MySQLdb.cursors import DictCursor
-import uuid
-from datetime import datetime
+import re # Validar correos electrónicos
 
 
 app = Flask(__name__)
@@ -26,25 +24,34 @@ def register():
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
         role = request.form['role']
-        
-        # Verificación correo electrónico
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
-        if cur.fetchone():
-            cur.close()
-            return "Correo electrónico ya registrado", 400
-        else:
-            hashed_password = generate_password_hash(password) # Se encripta la contraseña
 
-            # tabla usuarios
+        # Validaciones
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        if not re.match(email_regex, correo_electronico):
+            return render_template('register.html', error="El correo electrónico no tiene un formato válido.")
+
+        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+            return render_template('register.html', error="La contraseña debe tener al menos 8 caracteres, incluyendo letras y números.")
+        
+        try:
+            # Verificación correo electrónico
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
+            if cur.fetchone():
+                cur.close()
+                return "Correo electrónico ya registrado", 400
+        # else:
+            # Crear usuario
+            hashed_password = generate_password_hash(password) # Se encripta la contraseña
             cur.execute("INSERT INTO usuarios (nombre_completo, correo_electronico, contraseña, rol) VALUES (%s, %s, %s, %s)", 
                         (nombre_completo, correo_electronico, hashed_password, role))
             mysql.connection.commit()
             
+            # ID del usuario registrado
             cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
             user_id = cur.fetchone()[0] # ID del usuario
 
-            # Alumno en tareas_alumno 
+            # Alumno en tabla perfiles_alumno 
             if role == 'alumno':
                 cur.execute("INSERT INTO perfiles_alumnos (alumno_id, nombre_completo) VALUES (%s, %s)", 
                             (user_id, nombre_completo))
@@ -52,7 +59,15 @@ def register():
             
             cur.close()
             
-            return redirect(url_for('index'))
+            # return redirect(url_for('index'))
+            return render_template('success.html', mensaje="Registro exitoso. Ahora puedes iniciar sesión.")
+
+        except Exception as e:
+            return render_template('register.html', error="Ocurrió un error al registrar el usuario. Intenta nuevamente.")
+        
+        finally:
+            cur.close()
+
 
     return render_template('register.html')
 
