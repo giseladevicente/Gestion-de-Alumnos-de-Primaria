@@ -7,6 +7,7 @@
 - **Nombre del informe**: Sistema de Gestión de Alumnos de Primaria
 
 
+
 # Proyecto Sistema de Gestión de Alumnos de Primaria
 
 Este proyecto es una aplicación web desarrollada en Flask que gestiona el registro, asignación de tareas y comunicación entre docentes, alumnos y padres. Está diseñado para facilitar la interacción entre los usuarios, de acuerdo con sus roles, y mejorar la organización del trabajo escolar.

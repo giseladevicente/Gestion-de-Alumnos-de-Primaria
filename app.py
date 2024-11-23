@@ -40,7 +40,7 @@ def register():
             if cur.fetchone():
                 cur.close()
                 return "Correo electrónico ya registrado", 400
-        # else:
+            
             # Crear usuario
             hashed_password = generate_password_hash(password) # Se encripta la contraseña
             cur.execute("INSERT INTO usuarios (nombre_completo, correo_electronico, contraseña, rol) VALUES (%s, %s, %s, %s)", 
@@ -155,31 +155,37 @@ def crear_tarea():
             archivo_adjunto.save(f"uploads/{archivo_nombre}")
 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO tareas_examenes (docente_id, titulo, descripcion, fecha_entrega, archivo_adjunto) "
-                    "VALUES (%s, %s, %s, %s, %s)", 
-                    (session['user_id'], titulo, descripcion, fecha_entrega, archivo_nombre))
+
+        try:
+            cur.execute("INSERT INTO tareas_examenes (docente_id, titulo, descripcion, fecha_entrega, archivo_adjunto) "
+                        "VALUES (%s, %s, %s, %s, %s)", 
+                        (session['user_id'], titulo, descripcion, fecha_entrega, archivo_nombre))
+            
+            mysql.connection.commit()
+
+            tarea_id = cur.lastrowid  # Obtener el ID de la tarea recién insertada
+
+            # Obtener todos los alumnos (usuarios con rol 'alumno')
+            cur.execute("SELECT id FROM perfiles_alumnos")
+            alumnos = cur.fetchall()
         
-        mysql.connection.commit()
-        cur.close()
+            # Asignar la tarea a todos los alumnos
+            for alumno in alumnos:
+                cur.execute("""
+                    INSERT INTO tareas_alumnos (tarea_id, alumno_id) 
+                    VALUES (%s, %s)
+                """, (tarea_id, alumno['id'], 'Pendiente')) # El estado inicial es "Pendiente")
+            
+            mysql.connection.commit()
 
-        tarea_id = cur.lastrowid  # Obtener el ID de la tarea recién insertada
-
-        # Obtener todos los alumnos (usuarios con rol 'alumno')
-        cur.execute("SELECT id FROM perfiles_alumnos")
-        alumnos = cur.fetchall()
-       
-        # Asignar la tarea a todos los alumnos
-        for alumno in alumnos:
-            cur.execute("""
-                INSERT INTO tareas_alumnos (tarea_id, alumno_id) 
-                VALUES (%s, %s)
-            """, (tarea_id, alumno['id'], 'Pendiente')) # El estado inicial es "Pendiente")
+            return redirect(url_for('lista_tareas'))  # Redirigir a la lista de tareas
         
-        mysql.connection.commit()
-        cur.close()
+        except Exception as e:
+            mysql.connection.rollback()  # En caso de error, revertir cambios
+            return render_template('crear_tarea.html', error="Ocurrió un error al crear la tarea. Intenta nuevamente.")
 
-
-        return redirect(url_for('lista_tareas'))  # Redirigir a la lista de tareas
+        finally:
+            cur.close()  # Cerrar el cursor al final
 
     return render_template('crear_tarea.html')
 
