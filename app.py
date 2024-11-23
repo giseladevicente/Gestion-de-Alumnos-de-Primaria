@@ -285,7 +285,15 @@ def crear_comunicado_personalizado():
 
         return redirect(url_for('lista_comunicados', mensaje='Comunicado creado con éxito.'))
     
-    return render_template('crear_comunicado_personalizado.html')
+    # Alumnos y padres para la selección
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'alumno'")
+    alumnos = cur.fetchall()
+    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'padre'")
+    padres = cur.fetchall()
+    cur.close()
+    
+    return render_template('crear_comunicado_personalizado.html', alumnos=alumnos, padres=padres)
 
 
 # PERFIL ALUMNO

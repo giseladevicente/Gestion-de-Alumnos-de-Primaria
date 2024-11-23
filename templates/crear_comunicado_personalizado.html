@@ -6,6 +6,7 @@
 
 <div class="container mt-4">
   <form action="/crear_comunicado_personalizado" method="POST">
+    <input type="hidden" name="personalizado" value="personalizado" />
     <!-- Destinatario -->
     <div class="mb-3">
       <label for="tipo_destinatario" class="form-label"
@@ -33,9 +34,16 @@
         required
       >
         <option value="" disabled selected>Seleccione un destinatario</option>
-        {% for usuario in usuarios %}
-        <option value="{{ usuario[0] }}">{{ usuario[1] }}</option>
-        {% endfor %}
+        <optgroup label="Alumnos">
+          {% for alumno in alumnos %}
+          <option value="{{ alumno[0] }}">{{ alumno[1] }}</option>
+          {% endfor %}
+        </optgroup>
+        <optgroup label="Padres">
+          {% for padre in padres %}
+          <option value="{{ padre[0] }}">{{ padre[1] }}</option>
+          {% endfor %}
+        </optgroup>
       </select>
     </div>
     <!-- Comunicado -->
@@ -57,5 +65,23 @@
     </div>
   </form>
 </div>
+
+<script>
+  const tipoDestinatario = document.getElementById("tipo_destinatario");
+  const destinatario = document.getElementById("destinatario");
+
+  tipoDestinatario.addEventListener("change", () => {
+    const tipo = tipoDestinatario.value;
+    // Ocultar/mostrar opciones según el tipo seleccionado
+    const grupos = destinatario.querySelectorAll("optgroup");
+    grupos.forEach((grupo) => (grupo.hidden = true));
+    if (tipo === "alumno") {
+      destinatario.querySelector("optgroup[label='Alumnos']").hidden = false;
+    } else if (tipo === "padre") {
+      destinatario.querySelector("optgroup[label='Padres']").hidden = false;
+    }
+    destinatario.value = "";
+  });
+</script>
 
 {% include 'footer.html' %}
