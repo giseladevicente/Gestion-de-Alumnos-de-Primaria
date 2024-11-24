@@ -25,7 +25,7 @@ def register():
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
         role = request.form['role']
-        hijo_id = request.form.get('hijo') 
+        hijo_id = request.form.get('hijo_id') 
 
         # Validaciones
         email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -53,38 +53,26 @@ def register():
             cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
             user_id = cur.fetchone()[0] # ID del usuario
 
-            # Si el rol es 'padre', se relaciona con el hijo
+            # Relación Padre-Hijo
             if role == 'padre':
-                hijo_id = request.form.get('hijo_id')  # Obtener el hijo seleccionado
-                if hijo_id:
-                    cur.execute("INSERT INTO relacion_padre_hijo (padre_id, hijo_id) VALUES (%s, %s)", 
-                        (user_id, hijo_id))
-                mysql.connection.commit()
-            else:
-                return render_template('register.html', error="Debes seleccionar un alumno para asociarlo con el padre.")
-
-
-            # Alumno en tabla perfiles_alumno 
-            if role == 'alumno':
-                cur.execute("INSERT INTO perfiles_alumnos (alumno_id, nombre_completo) VALUES (%s, %s)", 
-                            (user_id, nombre_completo))
+                if not hijo_id:
+                    return render_template('register.html', error="Debes seleccionar un alumno para asociarlo con el padre.")
+                
+                cur.execute("INSERT INTO relacion_padre_hijo (padre_id, hijo_id) VALUES (%s, %s)", 
+                                (user_id, hijo_id))
                 mysql.connection.commit()
             
             cur.close()
-            
-            # return redirect(url_for('index'))
+
             return render_template('success.html', mensaje="Registro exitoso. Ahora puedes iniciar sesión.")
 
         except Exception as e:
             return render_template('register.html', error="Ocurrió un error al registrar el usuario. Intenta nuevamente.")
-        
-        finally:
-            cur.close()
 
-        # Obtener la lista de alumnos solo si el rol es padre
+    # Lista de alumnos rol padre
     cur = mysql.connection.cursor()
     cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'alumno'")
-    alumnos = cur.fetchall()  # Devuelve una lista de tuplas (id, nombre_completo)
+    alumnos = cur.fetchall()  # Lista de tuplas (id, nombre_completo)
     cur.close()
 
     return render_template('register.html', alumnos=alumnos)
@@ -266,7 +254,11 @@ def lista_comunicados():
         (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
          FROM respuestas_comunicados r
          JOIN usuarios u ON r.remitente_id = u.id
-         WHERE r.comunicado_id = c.id) AS respuestas
+         WHERE r.comunicado_id = c.id) AS respuestas,
+        (SELECT GROUP_CONCAT(u.nombre_completo SEPARATOR ', ') 
+         FROM comunicados_destinatarios cd 
+         JOIN usuarios u ON cd.usuario_id = u.id 
+         WHERE cd.comunicado_id = c.id) AS destinatarios
         FROM comunicados c
         ORDER BY c.fecha_envio DESC
     """)
@@ -274,9 +266,12 @@ def lista_comunicados():
     cur.close()
 
     comunicados_format = [
-        (row[0], row[1], row[2], row[3], eval(row[4]) if row[4] else None)
+        (row[0], row[1], row[2], row[3], eval(row[4]) if row[4] else None, row[5])  
         for row in comunicados
     ]
+
+    print(comunicados)
+
 
     return render_template('lista_comunicados.html', comunicados=comunicados_format, mensaje=mensaje)
 
@@ -315,7 +310,7 @@ def crear_comunicado_personalizado():
     cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'padre'")
     padres = cur.fetchall()
     cur.close()
-    
+
     return render_template('crear_comunicado_personalizado.html', alumnos=alumnos, padres=padres)
 
 
