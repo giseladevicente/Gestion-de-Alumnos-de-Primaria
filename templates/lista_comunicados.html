@@ -7,7 +7,7 @@
   <div class="table-responsive">
     {% for comunicado in comunicados %}
     <div
-      class="card mb-4 {% if comunicado[5] %}border-success{% else %}border-secondary{% endif %}"
+      class="card mb-4 {% if comunicado[3] %}border-success{% else %}border-secondary{% endif %}"
     >
       <div
         class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
@@ -23,8 +23,17 @@
         <p><strong>Contenido:</strong> {{ comunicado[1] }}</p>
         <p><em>Fecha de Envío: {{ comunicado[2] }}</em></p>
 
-        <!-- Botón Leído -->
-        {% if session.get('role') != 'docente' and not comunicado[5] %}
+        <p>
+          <strong>Destinatarios:</strong>
+          {% if comunicado[3] == "personalizado"%} {{ comunicado[5] }} {% else
+          %}
+          <em>Todos</em>
+          {% endif %}
+
+          <!-- Botón Leído Perfil NO docente -->
+          {% if session.get('role') != 'docente' and not comunicado[5] %}
+        </p>
+
         <form
           action="{{ url_for('marcar_comunicado_leido', comunicado_id=comunicado[0]) }}"
           method="POST"

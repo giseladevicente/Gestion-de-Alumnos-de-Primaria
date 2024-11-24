@@ -171,27 +171,27 @@ def crear_tarea():
 
             tarea_id = cur.lastrowid  # Obtener el ID de la tarea recién insertada
 
-            # Obtener todos los alumnos (usuarios con rol 'alumno')
+            # usuarios con rol 'alumno'
             cur.execute("SELECT id FROM perfiles_alumnos")
             alumnos = cur.fetchall()
         
-            # Asignar la tarea a todos los alumnos
+            # Asignar tarea a todos los alumnos
             for alumno in alumnos:
                 cur.execute("""
                     INSERT INTO tareas_alumnos (tarea_id, alumno_id) 
                     VALUES (%s, %s)
-                """, (tarea_id, alumno['id'], 'Pendiente')) # El estado inicial es "Pendiente")
+                """, (tarea_id, alumno['id'], 'Pendiente')) # Estado Inicial = "Pendiente" 
             
             mysql.connection.commit()
 
-            return redirect(url_for('lista_tareas'))  # Redirigir a la lista de tareas
+            return redirect(url_for('lista_tareas'))
         
         except Exception as e:
-            mysql.connection.rollback()  # En caso de error, revertir cambios
+            mysql.connection.rollback()
             return render_template('crear_tarea.html', error="Ocurrió un error al crear la tarea. Intenta nuevamente.")
 
         finally:
-            cur.close()  # Cerrar el cursor al final
+            cur.close() 
 
     return render_template('crear_tarea.html')
 
@@ -292,7 +292,7 @@ def crear_comunicado_personalizado():
             "INSERT INTO comunicados (docente_id, tipo_comunicado, contenido) VALUES (%s, %s, %s)",
             (session['user_id'], tipo_comunicado, contenido)
         )
-        comunicado_id = cur.lastrowid  # Obtiene el ID del comunicado recién creado
+        comunicado_id = cur.lastrowid  # ID comunicado recién creado
 
         cur.execute(
             "INSERT INTO comunicados_destinatarios (comunicado_id, usuario_id) VALUES (%s, %s)",
@@ -302,12 +302,19 @@ def crear_comunicado_personalizado():
         cur.close()
 
         return redirect(url_for('lista_comunicados', mensaje='Comunicado creado con éxito.'))
-     
+
     # Alumnos y padres para la selección
     cur = mysql.connection.cursor()
     cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'alumno'")
     alumnos = cur.fetchall()
-    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'padre'")
+     
+    cur.execute("""
+        SELECT p.id, CONCAT(p.nombre_completo, ' (Hijo: ', h.nombre_completo, ')') AS nombre_con_hijo
+        FROM usuarios p
+        JOIN relacion_padre_hijo rph ON p.id = rph.padre_id
+        JOIN usuarios h ON rph.hijo_id = h.id
+        WHERE p.rol = 'padre'
+    """)
     padres = cur.fetchall()
     cur.close()
 
