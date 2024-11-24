@@ -126,6 +126,13 @@ h2 {
   border: 1px solid #ccc;
 }
 
+/* Lista tareas */
+.tarea-vencida td {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+
 /* Botones */
 .btn {
   font-size: 1.1rem;

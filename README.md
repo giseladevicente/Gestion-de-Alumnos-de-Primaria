@@ -53,6 +53,7 @@ Todos los Usuarios utilizan el password **prueba123**
 
 - Mariano Perez - mperez@gmail.com
 - Juan Ruiz - jruiz@gmail.com
+- Iara Pacheco - ipacheco@gmail.com
 
 **DOCENTE:**
 
@@ -63,6 +64,7 @@ Todos los Usuarios utilizan el password **prueba123**
 
 - Maria Sanchez - msanchez@gmail.com
 - Marcelo Figueroa - mfigueroa@gmail.com
+- Matias Pacheco - mpacheco@gmail.com
 
 ## Tablas utilizadas en la Base de Datos (Workbrench)
 

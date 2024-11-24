@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from config import Config
 from werkzeug.security import check_password_hash, generate_password_hash
 from MySQLdb.cursors import DictCursor
+from datetime import datetime
 import re # Validar correos electrónicos
 
 
@@ -24,6 +25,7 @@ def register():
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
         role = request.form['role']
+        hijo_id = request.form.get('hijo') 
 
         # Validaciones
         email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -51,6 +53,17 @@ def register():
             cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
             user_id = cur.fetchone()[0] # ID del usuario
 
+            # Si el rol es 'padre', se relaciona con el hijo
+            if role == 'padre':
+                hijo_id = request.form.get('hijo_id')  # Obtener el hijo seleccionado
+                if hijo_id:
+                    cur.execute("INSERT INTO relacion_padre_hijo (padre_id, hijo_id) VALUES (%s, %s)", 
+                        (user_id, hijo_id))
+                mysql.connection.commit()
+            else:
+                return render_template('register.html', error="Debes seleccionar un alumno para asociarlo con el padre.")
+
+
             # Alumno en tabla perfiles_alumno 
             if role == 'alumno':
                 cur.execute("INSERT INTO perfiles_alumnos (alumno_id, nombre_completo) VALUES (%s, %s)", 
@@ -68,8 +81,13 @@ def register():
         finally:
             cur.close()
 
+        # Obtener la lista de alumnos solo si el rol es padre
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'alumno'")
+    alumnos = cur.fetchall()  # Devuelve una lista de tuplas (id, nombre_completo)
+    cur.close()
 
-    return render_template('register.html')
+    return render_template('register.html', alumnos=alumnos)
 
 
 # Inicio de Sesión - index.html
@@ -196,12 +214,17 @@ def lista_tareas():
         return redirect(url_for('index'))
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT id, titulo, descripcion, fecha_entrega, archivo_adjunto FROM tareas_examenes WHERE docente_id = %s", 
+    cur.execute("""SELECT id, titulo, descripcion, fecha_entrega, archivo_adjunto FROM tareas_examenes WHERE docente_id = %s ORDER BY fecha_entrega DESC""", 
                 (session['user_id'],))
     tareas = cur.fetchall()
     cur.close()
 
-    return render_template('lista_tareas.html', tareas=tareas)
+    fecha_actual = datetime.now().date()
+
+    for tarea in tareas:
+        print(tarea)
+
+    return render_template('lista_tareas.html', tareas=tareas, fecha_actual=fecha_actual)
 
 
 # COMUNICADOS
@@ -263,7 +286,7 @@ def lista_comunicados():
 def crear_comunicado_personalizado():
     if 'user_id' not in session or session.get('role') != 'docente':
         return redirect(url_for('index'))  
-
+     
     if request.method == 'POST':  
         destinatario = request.form['destinatario']
         contenido = request.form['contenido']
@@ -284,7 +307,7 @@ def crear_comunicado_personalizado():
         cur.close()
 
         return redirect(url_for('lista_comunicados', mensaje='Comunicado creado con éxito.'))
-    
+     
     # Alumnos y padres para la selección
     cur = mysql.connection.cursor()
     cur.execute("SELECT id, nombre_completo FROM usuarios WHERE rol = 'alumno'")

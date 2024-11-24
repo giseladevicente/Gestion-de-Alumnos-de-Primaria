@@ -16,8 +16,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for tarea in tareas %}
-        <tr>
+        {% for tarea in tareas %} {% set fecha_entrega = tarea[3] %}
+        <tr
+          class="{% if fecha_entrega < fecha_actual %}tarea-vencida{% else %}no-vencida{% endif %}"
+        >
           <td>{{ tarea[1] }}</td>
           <td>{{ tarea[2] }}</td>
           <td>{{ tarea[3] }}</td>
@@ -29,8 +31,9 @@
               class="btn btn-sm btn-outline-info"
               >Ver archivo</a
             >
-            {% else %} <span class="text-muted">No hay archivo adjunto</span> {%
-            endif %}
+            {% else %}
+            <span class="text-muted">No hay archivo adjunto</span>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -39,8 +42,8 @@
   </div>
   {% else %}
   <p class="text-center text-danger mt-4">No has creado tareas todavía.</p>
-  {% endif %}
-
+  {% endif %} 
+  
   <!-- Botones -->
   <div class="mt-4 d-flex justify-content-center gap-3">
     <a href="{{ url_for('crear_tarea') }}" class="btn btn-primary"
