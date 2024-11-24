@@ -2,10 +2,8 @@
 
 <h2 class="my-4">Registro de Usuario</h2>
 {% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endif %}
+<div class="alert alert-danger" role="alert">{{ error }}</div>
+{% endif %}
 <form action="{{ url_for('register') }}" method="POST">
   <div class="mb-3">
     <label for="nombre_completo" class="form-label">Nombre Completo</label>
@@ -61,7 +59,37 @@
       <option value="padre">Padre</option>
     </select>
   </div>
+
+  <!-- Campo hijo para Rol Padre-->
+  <div class="mb-3" id="hijo_div" style="display: none">
+    <label for="hijo_id" class="form-label">Seleccionar Hijo</label>
+    <select class="form-select" id="hijo_id" name="hijo_id">
+      <option value="" selected disabled>Seleccione un hijo</option>
+      {% for alumno in alumnos %}
+      <option value="{{ alumno[0] }}">{{ alumno[1] }}</option>
+      {% endfor %}
+    </select>
+    <small class="form-text text-muted">
+      Para poder crear un usuario con Rol Padre, el alumno ya debe estar
+      registrado.
+    </small>
+  </div>
+
   <button type="submit" class="btn btn-primary">Registrarse</button>
 </form>
 
 {% include 'footer.html' %}
+
+<script>
+  // Campo hijo si el rol seleccionado es "padre"
+  document.getElementById("role").addEventListener("change", function () {
+    var role = this.value;
+    var hijoDiv = document.getElementById("hijo_div");
+
+    if (role === "padre") {
+      hijoDiv.style.display = "block";
+    } else {
+      hijoDiv.style.display = "none";
+    }
+  });
+</script>

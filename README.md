@@ -6,12 +6,9 @@
 - **Fecha de entrega**: 19/11/2024
 - **Nombre del informe**: Sistema de Gestión de Alumnos de Primaria
 
-
-
 # Proyecto Sistema de Gestión de Alumnos de Primaria
 
 Este proyecto es una aplicación web desarrollada en Flask que gestiona el registro, asignación de tareas y comunicación entre docentes, alumnos y padres. Está diseñado para facilitar la interacción entre los usuarios, de acuerdo con sus roles, y mejorar la organización del trabajo escolar.
-
 
 ## Instrucciones para Ejecutar el Proyecto
 
@@ -54,6 +51,7 @@ Todos los Usuarios utilizan el password **prueba123**
 - Mariano Perez - mperez@gmail.com
 - Juan Ruiz - jruiz@gmail.com
 - Iara Pacheco - ipacheco@gmail.com
+- Antonella Aguirre - aaguirre@gmail.com
 
 **DOCENTE:**
 
@@ -65,6 +63,7 @@ Todos los Usuarios utilizan el password **prueba123**
 - Maria Sanchez - msanchez@gmail.com
 - Marcelo Figueroa - mfigueroa@gmail.com
 - Matias Pacheco - mpacheco@gmail.com
+- Nestor Aguirre - naguirre@gmail.com
 
 ## Tablas utilizadas en la Base de Datos (Workbrench)
 
