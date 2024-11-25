@@ -252,21 +252,46 @@ def lista_comunicados():
         return redirect(url_for('index'))
 
     mensaje = request.args.get('mensaje')
+    user_id = session['user_id']
+    role = session.get('role')
 
     cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
-        (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
-         FROM respuestas_comunicados r
-         JOIN usuarios u ON r.remitente_id = u.id
-         WHERE r.comunicado_id = c.id) AS respuestas,
-        (SELECT GROUP_CONCAT(u.nombre_completo SEPARATOR ', ') 
-         FROM comunicados_destinatarios cd 
-         JOIN usuarios u ON cd.usuario_id = u.id 
-         WHERE cd.comunicado_id = c.id) AS destinatarios
+
+    if role == 'docente':
+        cur.execute("""
+SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
+            (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
+            FROM respuestas_comunicados r
+            JOIN usuarios u ON r.remitente_id = u.id
+            WHERE r.comunicado_id = c.id) AS respuestas,
+            (SELECT GROUP_CONCAT(u.nombre_completo SEPARATOR ', ') 
+            FROM comunicados_destinatarios cd 
+            JOIN usuarios u ON cd.usuario_id = u.id 
+            WHERE cd.comunicado_id = c.id) AS destinatarios
         FROM comunicados c
+        LEFT JOIN comunicados_destinatarios cd ON c.id = cd.comunicado_id
+        WHERE c.docente_id = %s OR c.tipo_comunicado = 'general' OR cd.usuario_id = %s
+        GROUP BY c.id
         ORDER BY c.fecha_envio DESC
-    """)
+        """, (user_id, user_id))
+    else:  # Rol alumno u otro
+        cur.execute("""
+        SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
+            (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
+             FROM respuestas_comunicados r
+             JOIN usuarios u ON r.remitente_id = u.id
+             WHERE r.comunicado_id = c.id) AS respuestas,
+            (SELECT GROUP_CONCAT(u.nombre_completo SEPARATOR ', ') 
+             FROM comunicados_destinatarios cd 
+             JOIN usuarios u ON cd.usuario_id = u.id 
+             WHERE cd.comunicado_id = c.id) AS destinatarios
+        FROM comunicados c
+        LEFT JOIN comunicados_destinatarios cd ON c.id = cd.comunicado_id
+        WHERE c.tipo_comunicado = 'general' OR (c.tipo_comunicado = 'personalizado' AND cd.usuario_id = %s)
+        GROUP BY c.id
+        ORDER BY c.fecha_envio DESC
+        """, (user_id,))
+
     comunicados = cur.fetchall()
     cur.close()
 
