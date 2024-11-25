@@ -1,5 +1,20 @@
 {% include 'header.html' %}
 
+<!-- Botones -->
+{% if session.get('role') == 'docente' %}
+<div class="mb-4 d-flex flex-wrap justify-content-center gap-3">
+  <a href="{{ url_for('crear_comunicado') }}" class="btn btn-primary my-4">
+    <i class="bi bi-megaphone"></i> Crear Comunicado General</a
+  >
+  <a
+    href="{{ url_for('crear_comunicado_personalizado') }}"
+    class="btn btn-primary my-4"
+  >
+    <i class="bi bi-megaphone"></i> Crear Comunicado Personalizado</a
+  >
+</div>
+{% endif %}
+
 <div class="container my-5">
   <h2 class="text-center text-primary mb-4">Lista de Comunicados</h2>
 
@@ -89,21 +104,7 @@
   </p>
   {% endif %}
 
-  <!-- Botones -->
-  {% if session.get('role') == 'docente' %}
-  <div class="mb-4 d-flex flex-wrap justify-content-center gap-3">
-    <a href="{{ url_for('crear_comunicado') }}" class="btn btn-primary">
-      <i class="bi bi-megaphone"></i> Crear Comunicado General</a
-    >
-    <a
-      href="{{ url_for('crear_comunicado_personalizado') }}"
-      class="btn btn-primary my-4"
-    >
-      <i class="bi bi-megaphone"></i> Crear Comunicado Personalizado</a
-    >
-  </div>
-  {% endif %}
-
+  <!-- Botón Regresar -->
   <div class="mb-4 d-flex justify-content-center">
     <a href="{{ url_for('dashboard') }}" class="btn btn-secondary my-4">
       <i class="bi bi-arrow-left"> </i>Regresar al Panel de Control</a

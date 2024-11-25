@@ -53,6 +53,11 @@ def register():
             cur.execute("SELECT id FROM usuarios WHERE correo_electronico = %s", (correo_electronico,))
             user_id = cur.fetchone()[0] # ID del usuario
 
+            # Alumno en perfiles_alumnos
+            if role == 'alumno':
+                cur.execute("INSERT INTO perfiles_alumnos (alumno_id, nombre_completo) VALUES (%s, %s)", (user_id, nombre_completo))
+                mysql.connection.commit()
+
             # Relación Padre-Hijo
             if role == 'padre':
                 if not hijo_id:
