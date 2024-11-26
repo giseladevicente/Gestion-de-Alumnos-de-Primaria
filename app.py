@@ -420,7 +420,7 @@ SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
     cur.close()
 
     comunicados_format = [
-        (row[0], row[1], row[2], row[3], row[4], eval(row[5]) if row[5] else None, row[6])
+        (row[0], row[1], row[2], row[3], row[4] if row[4] is not None else 0, row[5])  # No usamos eval()
         for row in comunicados
     ]
 
@@ -440,7 +440,6 @@ def marcar_como_leido(comunicado_id):
 
     print(f"Comunicado ID: {comunicado_id}, Usuario ID: {user_id}") 
 
-    # Actualizamos el estado 'leído' en la tabla comunicados_destinatarios
     cur = mysql.connection.cursor()
     cur.execute("""
         UPDATE comunicados_destinatarios
