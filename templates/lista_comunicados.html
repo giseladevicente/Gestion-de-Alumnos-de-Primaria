@@ -28,7 +28,22 @@
         class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
       >
         <strong>Comunicado: {{ comunicado[3] | capitalize }}</strong>
+
+        {% if comunicado.leido == 1 %}
+        <form
+          action="{{ url_for('marcar_como_leido', comunicado_id=comunicado[0]) }}"
+          method="POST"
+          class="d-inline"
+        >
+          <button type="submit" class="btn btn-outline-light btn-sm">
+            Marcar como leído
+          </button>
+        </form>
+        {% else %}
+        <span class="badge bg-success">Leído</span>
+        {% endif %}
       </div>
+
       <div class="card-body">
         <p><strong>Contenido:</strong> {{ comunicado[1] }}</p>
         <p><em>Fecha de Envío: {{ comunicado[2] }}</em></p>
@@ -103,4 +118,5 @@ comunicado[1] = Mensaje del comunicado
 comunicado[2] = fecha creación
 comunicado[3] = tipo comunicado 
 comunicado[4] = respuesta
+comunicado[5] = destinatarios
 -->
