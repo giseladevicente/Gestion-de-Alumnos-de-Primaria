@@ -275,16 +275,16 @@ SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
         ORDER BY c.fecha_envio DESC
         """, (user_id, user_id))
     else:  # Rol alumno u otro
-        cur.execute("""
-        SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
+        cur.execute("""       
+        SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,           
             (SELECT JSON_ARRAYAGG(JSON_OBJECT('respuesta', r.respuesta, 'remitente', u.nombre_completo, 'fecha', r.fecha_respuesta))
              FROM respuestas_comunicados r
              JOIN usuarios u ON r.remitente_id = u.id
-             WHERE r.comunicado_id = c.id) AS respuestas,
+             WHERE r.comunicado_id = c.id) AS respuestas,                   
             (SELECT GROUP_CONCAT(u.nombre_completo SEPARATOR ', ') 
              FROM comunicados_destinatarios cd 
              JOIN usuarios u ON cd.usuario_id = u.id 
-             WHERE cd.comunicado_id = c.id) AS destinatarios
+             WHERE cd.comunicado_id = c.id) AS destinatarios                             
         FROM comunicados c
         LEFT JOIN comunicados_destinatarios cd ON c.id = cd.comunicado_id
         WHERE c.tipo_comunicado = 'general' OR (c.tipo_comunicado = 'personalizado' AND cd.usuario_id = %s)
@@ -423,28 +423,6 @@ def tareas_alumno():
     return render_template('tareas_alumno.html', tareas=tareas, nombre_completo=session['nombre_completo'])
 
 
-@app.route('/marcar_comunicado_leido/<int:comunicado_id>', methods=['POST'])
-def marcar_comunicado_leido(comunicado_id):
-    if 'user_id' not in session:
-        return redirect(url_for('index'))
-
-    cur = mysql.connection.cursor()
-
-    cur.execute(
-        """
-        UPDATE comunicados_destinatarios
-        SET leido = TRUE
-        WHERE comunicado_id = %s AND usuario_id = %s
-        """,
-        (comunicado_id, session['user_id'])
-    )
-
-    mysql.connection.commit()
-    cur.close()
-
-    return redirect(url_for('lista_comunicados', mensaje='Comunicado marcado como leído.'))
-
-
 ### RESPONDER COMUNICADOS
 @app.route('/responder_comunicado/<int:comunicado_id>', methods=['POST'])
 def responder_comunicado(comunicado_id):
@@ -464,6 +442,7 @@ def responder_comunicado(comunicado_id):
     cur.close()
 
     return redirect(url_for('lista_comunicados', mensaje='Respuesta enviada con éxito.'))
+
 
 
 
