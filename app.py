@@ -420,7 +420,7 @@ SELECT c.id, c.contenido, c.fecha_envio, c.tipo_comunicado,
     cur.close()
 
     comunicados_format = [
-        (row[0], row[1], row[2], row[3], row[4] if row[4] is not None else 0, row[5])  # No usamos eval()
+        (row[0], row[1], row[2], row[3], row[4] if row[4] is not None else 0, row[5])  
         for row in comunicados
     ]
 
