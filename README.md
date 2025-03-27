@@ -63,12 +63,12 @@ Para interactuar con el sistema, todos los usuarios de prueba utilizan el siguie
 
 ### DOCENTE:
 
-- Florencia Ortiz - florortiz@gmail.com
+- Florencia Ortiz - fortiz@gmail.com
 - Flavia Ortega - fortega@gmail.com
 
 ### PADRE:
 
 - Maria Sanchez - msanchez@gmail.com
-- Marcelo Figueroa - mfigueroa@gmail.com
+- Marcela Figueroa - mfigueroa@gmail.com
 - Matias Pacheco - mpacheco@gmail.com
 - Nestor Aguirre - naguirre@gmail.com
